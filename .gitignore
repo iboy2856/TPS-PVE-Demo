@@ -1,0 +1,31 @@
+# 核心忽略目录
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Mm]emoryCaptures/
+
+# 特定文件类型
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+*.VC.db
+
+# Unity 生成的 meta 文件（不要忽略，这是必需的）
+!*.meta
+
+# 其他常见文件
+*.apk
+*.aab
+*.unitypackage
