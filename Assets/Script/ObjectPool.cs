@@ -38,10 +38,11 @@ public class ObjectPool : MonoBehaviour
         {
             // 动态扩容
             GameObject newBullet = Instantiate(bulletPrefab);
+            newBullet.SetActive(false);
             bulletPool.Enqueue(newBullet);
         }
         GameObject bullet = bulletPool.Dequeue();
-        bullet.SetActive(true);
+        
         return bullet;
     }
 
@@ -68,4 +69,4 @@ public class ObjectPool : MonoBehaviour
         casing.SetActive(false);
         casingPool.Enqueue(casing);
     }
-}
+}   

@@ -46,7 +46,15 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // 击中任何物体时立即归还（可加入击中特效、伤害逻辑）
+        // 尝试获取敌人生命值组件
+        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(1); // 造成1点伤害
+        }
+
+        // 击中任何物体后都归还子弹（包括击中敌人）
         ReturnToPool();
+
     }
 }
