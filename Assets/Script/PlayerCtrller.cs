@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerCtrller : MonoBehaviour
@@ -9,6 +10,7 @@ public class PlayerCtrller : MonoBehaviour
     private int aimingLayerIndex;
     private bool isAiming = false;
 
+    private bool isTempAiming = false;  // 新增标志
     void Start()
     {
         cameraMain = Camera.main.transform;
@@ -44,9 +46,15 @@ public class PlayerCtrller : MonoBehaviour
             animator.SetFloat("Speed", currentSpeed);
         }
 
+        // ========= 射击输入（按左键短暂激活瞄准层）=========
+        if (Input.GetButtonDown("Fire1")) // 按下左键的瞬间
+        {
+            StartCoroutine(ActivateAimingTemporarily());
+        }
+
         // 瞄准输入
         isAiming = Input.GetButton("Fire2"); // 鼠标右键
-        if (aimingLayerIndex != -1)
+        if (aimingLayerIndex != -1 && !isTempAiming)
         {
             animator.SetLayerWeight(aimingLayerIndex, isAiming ? 1f : 0f);
         }
@@ -74,4 +82,20 @@ public class PlayerCtrller : MonoBehaviour
             }
         }
     }
+    IEnumerator ActivateAimingTemporarily()
+    {
+        isTempAiming = true;
+        if (aimingLayerIndex != -1)
+        {
+            animator.SetLayerWeight(aimingLayerIndex, 1f);
+        }
+        yield return new WaitForSeconds(1f);
+        if (aimingLayerIndex != -1)
+        {
+            animator.SetLayerWeight(aimingLayerIndex, isAiming ? 1f : 0f);  // 恢复右键控制
+        }
+        isTempAiming = false;
+    }
+       
+
 }

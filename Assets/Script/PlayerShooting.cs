@@ -50,6 +50,8 @@ public class PlayerShooting : MonoBehaviour
     private bool isAiming = false;
     private Camera mainCamera;
 
+    private bool isFiring = false;  // 是否正在射击
+
     void Start()
     {
         animator = GetComponentInChildren<Animator>();
@@ -101,7 +103,8 @@ public class PlayerShooting : MonoBehaviour
 
     void LateUpdate()
     {
-        if (isAiming && rightHandBone != null && mainCamera != null)
+        // 右键瞄准 或 左键射击时，手部跟随准星
+        if ((isAiming || isFiring) && rightHandBone != null && mainCamera != null)
         {
             Quaternion targetRot = mainCamera.transform.rotation * Quaternion.Euler(handRotationOffset);
             Quaternion recoilRot = Quaternion.Euler(-currentRecoil, 0f, 0f);
@@ -111,6 +114,10 @@ public class PlayerShooting : MonoBehaviour
 
     void Fire()
     {
+        // 开始射击，标记为正在射击
+        isFiring = true;
+        Invoke(nameof(StopFiring), 1f);  // 1秒后复位
+
         // 换弹时不能射击
         if (isReloading) return;
 
@@ -149,16 +156,31 @@ public class PlayerShooting : MonoBehaviour
         Ray ray = mainCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         RaycastHit hit;
         Vector3 targetPoint;
-        if (Physics.Raycast(ray, out hit, 1000f))
+
+        // 设置 LayerMask，忽略 Player 层
+        int playerLayer = LayerMask.NameToLayer("Player");
+        int layerMask = ~(1 << playerLayer);  // 忽略 Player 层，其他层都检测
+
+        if (Physics.Raycast(ray, out hit, 1000f, layerMask))
+        {
             targetPoint = hit.point;
+            // 可选：调试用，在控制台输出击中点
+            // Debug.Log("击中点: " + hit.point + " 物体: " + hit.collider.name);
+        }
         else
+        {
+            // 没有击中任何物体，取射线前方 1000 米处的点
             targetPoint = ray.GetPoint(1000f);
+        }
+
 
         // 生成子弹
         if (objectPool != null && barrelLocation != null)
         {
             GameObject bullet = objectPool.GetBullet();
             bullet.transform.position = barrelLocation.position;
+
+            // 计算子弹方向：从枪口指向目标点
             Vector3 direction = (targetPoint - barrelLocation.position).normalized;
             bullet.transform.rotation = Quaternion.LookRotation(direction);
             bullet.SetActive(true);
@@ -179,5 +201,9 @@ public class PlayerShooting : MonoBehaviour
                 rb.AddTorque(Random.insideUnitSphere * ejectPower, ForceMode.Impulse);
             }
         }
+    }
+    void StopFiring()
+    {
+        isFiring = false;
     }
 }
