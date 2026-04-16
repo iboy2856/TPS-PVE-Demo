@@ -1,8 +1,10 @@
 using UnityEngine;
 using System.Collections;
+using TMPro;
 
 public class PlayerShooting : MonoBehaviour
 {
+    public TextMeshProUGUI ammoText;   // 拖入 AmmoText 对象
     [Header("音效")]
     public AudioSource audioSource;
     public AudioClip fireSound;
@@ -57,6 +59,7 @@ public class PlayerShooting : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         mainCamera = Camera.main;
         currentAmmo = maxAmmo;
+        UpdateAmmoUI();
     }
 
     void Update()
@@ -97,6 +100,7 @@ public class PlayerShooting : MonoBehaviour
         int take = Mathf.Min(needed, totalReserveAmmo);
         currentAmmo += take;
         totalReserveAmmo -= take;
+        UpdateAmmoUI();   // 添加这行
         isReloading = false;
         Debug.Log($"Reloaded. Current ammo: {currentAmmo}, Reserve: {totalReserveAmmo}");
     }
@@ -140,7 +144,7 @@ public class PlayerShooting : MonoBehaviour
 
         // 消耗弹药
         currentAmmo--;
-
+        UpdateAmmoUI();   // 添加这行
         // 后坐力
         currentRecoil += recoilAmount;
         currentRecoil = Mathf.Clamp(currentRecoil, 0f, recoilAmount * 2f);
@@ -205,5 +209,10 @@ public class PlayerShooting : MonoBehaviour
     void StopFiring()
     {
         isFiring = false;
+    }
+    void UpdateAmmoUI()
+    {
+        if (ammoText != null)
+            ammoText.text = $"{currentAmmo} / {totalReserveAmmo}";
     }
 }

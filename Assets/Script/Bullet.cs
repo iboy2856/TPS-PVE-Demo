@@ -46,13 +46,21 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // 尝试获取敌人生命值组件
-        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-        if (enemy != null)
+        // 先尝试获取丧尸组件（ZombieBase 是抽象类，但可以获取到子类组件）
+        ZombieBase zombie = other.GetComponent<ZombieBase>();
+        if (zombie != null)
         {
-            enemy.TakeDamage(1); // 造成1点伤害
+            zombie.TakeDamage(1); // 造成1点伤害（你可以调整伤害值）
         }
-
+        else
+        {
+            // 尝试获取敌人生命值组件
+            EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(1); // 造成1点伤害
+            }
+        }
         // 击中任何物体后都归还子弹（包括击中敌人）
         ReturnToPool();
 

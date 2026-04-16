@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NormalZombie : ZombieBase
 {
-    protected override int GetMaxHealth() => 30;
+    protected override int GetMaxHealth() => 1;
     protected override float GetMoveSpeed() => 3.5f;
 
     protected override void Start()
@@ -13,7 +13,7 @@ public class NormalZombie : ZombieBase
         zombieName = "夜魔";
         backstory = "生前本身一个怨气极重的上班族，却死在了阴气最盛的子时，死后在夜晚能力大幅提升...";
     }
-   public override void Attack()
+    public override void Attack()
     {
         // 触发攻击动画
         if (animator != null)

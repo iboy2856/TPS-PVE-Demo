@@ -36,7 +36,7 @@ public abstract class ZombieBase : MonoBehaviour
 
         //计算与玩家距离
         float distance = Vector3.Distance(transform.position, player.position);
-        
+
 
         // 攻击条件：在范围内、冷却结束、且不在攻击动画中
         if (distance <= attackRange && Time.time >= nextAttackTime && !isAttacking)
