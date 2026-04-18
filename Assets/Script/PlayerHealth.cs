@@ -7,11 +7,11 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     [Header("生命值设置")]
-    public int maxHelath = 100;
+    public int maxHealth = 100;
     private int currentHealth;
 
     [Header("UI")]
-    public Text healthText;
+    public Slider healthSlider;
 
     [Header("受伤效果")]
     public float invincibleDuration = 1f;//受击后有一秒的无敌时间
@@ -19,7 +19,13 @@ public class PlayerHealth : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentHealth = maxHelath;
+        currentHealth = maxHealth;
+        // 初始化 Slider
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth;
+        }
         UpdateUI();
     }
     public void TakeDamage(int damage)
@@ -47,10 +53,8 @@ public class PlayerHealth : MonoBehaviour
 
     void UpdateUI()
     {
-        if (healthText != null)
-        {
-            healthText.text = $"生命:{currentHealth}";
-        }
+        if (healthSlider != null)
+            healthSlider.value = currentHealth;
     }
     void Die()
     {
